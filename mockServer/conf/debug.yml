@@ -1,0 +1,12 @@
+# config information
+# This is just a demonstration
+
+# server config information
+server:
+  mode: debug # debug, release
+  build: "/~/go/src/github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/mockServer/app"
+  port: "localhost:8081"
+  ZkAddr: "localhost:2181"
+  BlockSize: 64
+  NumReplicas: 2
+  NumTapestry: 2
