@@ -24,6 +24,7 @@ bin/zkCli.sh -server 127.0.0.1:2181
 cd $GOPATH
 go get -u -v -d github.com/yuluobin/Gin-Test-Mocker-Server/...
 cd $GOPATH/src/github.com/yuluobin/Gin-Test-Mocker-Server
+git checkout feat
 sudo docker build . # Build docker image
 sudo docker run --network host e713
 ```
