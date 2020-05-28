@@ -3,9 +3,9 @@ package puddlestore
 import (
 	"bytes"
 	"fmt"
-	"github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/tapestry"
 	"github.com/samuel/go-zookeeper/zk"
 	uuid "github.com/satori/go.uuid"
+	"github.com/yuluobin/Gin-Test-Mocker-Server/tapestry"
 	"math/rand"
 )
 

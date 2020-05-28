@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57"
-	"github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/mockServer/conf"
-	"github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/mockServer/system"
 	"github.com/gin-gonic/gin"
+	"github.com/yuluobin/Gin-Test-Mocker-Server"
+	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/conf"
+	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/system"
 	"io/ioutil"
 	"net/http"
 	"os"

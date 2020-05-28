@@ -1,7 +1,7 @@
 package puddlestore
 
 import (
-	"github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/tapestry"
+	"github.com/yuluobin/Gin-Test-Mocker-Server/tapestry"
 	"math/rand"
 	"time"
 )

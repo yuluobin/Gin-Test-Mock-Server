@@ -2,7 +2,7 @@ package system
 
 import (
 	"fmt"
-	"github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/mockServer/conf"
+	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/conf"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"

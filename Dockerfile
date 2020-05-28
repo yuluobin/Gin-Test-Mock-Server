@@ -1,12 +1,13 @@
-FROM golang:latest
+FROM golang
 
-COPY . $GOPATH/src/github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57
-WORKDIR $GOPATH/src/github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/mockServer
+RUN go get github.com/gin-gonic/gin
 
-
+RUN mkdir -p /go/src/github.com/yuluobin/Gin-Test-Mocker-Server
+COPY . /go/src/github.com/yuluobin/Gin-Test-Mocker-Server
+WORKDIR /go/src/github.com/yuluobin/Gin-Test-Mocker-Server/mockServer
 #ADD . $GOPATH/src/github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/mockServer/
 #WORKDIR $GOPATH/src/github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/mockServer
-RUN go get github.com/gin-gonic/gin
+RUN go get ./...
 RUN go build .
 EXPOSE 3000/tcp
 ENTRYPOINT ["./mockServer"]
