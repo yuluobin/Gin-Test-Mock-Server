@@ -10,3 +10,116 @@ server:
   BlockSize: 64
   NumReplicas: 2
   NumTapestry: 2
+
+func:
+  - route: "/login{?user,pwd}"
+    method: GET
+    header: JSON
+    ret_body:
+      ret:
+        msg: Successfully logged in!
+        token: ABC
+    err_body:
+      ret:
+        msg: Failed when logged in!
+        token:
+  - route: "/get_userinfo{?token}"
+    method: GET
+    header: JSON
+    ret_body:
+      ret:
+        msg: Successfully get user info!
+        user_info:
+          age: 18
+          gender: male
+    err_body:
+      ret:
+        msg: Failed when get user info!
+        user_info:
+          age:
+          gender:
+  - route: "/set_userinfo"
+    method: POST
+    header: JSON
+    post_body:
+      token:  ABC
+      age: 18
+    ret_body:
+      ret:
+        msg: Successfully set user info!
+        ret_code: 0
+    err_body:
+      ret:
+        msg: Failed when set user info!
+        ret_code: -1
+
+# for my test
+# I'll change `main` later
+#  - route: "/open{?path,create,write}"
+#    method: GET
+#    header: JSON
+#    ret_body:
+#      ret:
+#        msg: Successfully opened file!
+#        fd:
+#    err_body:
+#      ret:
+#        msg: Failed when opened file!
+#        err:
+#        fd:
+#  - route: "/close{?fd}"
+#    method: GET
+#    header: JSON
+#    ret_body:
+#      ret:
+#        msg: Successfully closed file!
+#    err_body:
+#      ret:
+#        msg: Failed when closed file!
+#        err:
+#  - route: "/read{fd,offset,size}"
+#    method: GET
+#    header: JSON
+#    ret_body:
+#      ret:
+#        msg: Successfully read file!
+#        content:
+#    err_body:
+#      ret:
+#        msg: Failed when read file!
+#        err:
+#  - route: "/write"
+#    method: POST
+#    header: JSON
+#    post_body:
+#      fd:
+#      offset:
+#      data:
+#    ret_body:
+#      ret:
+#        msg: Successfully write file!
+#    err_body:
+#      ret:
+#        msg: Failed when write file!
+#        err:
+#  - route: "/mkdir"
+#    method: POST
+#    header: JSON
+#    post_body:
+#      path:
+#    ret_body:
+#      ret:
+#        msg: Successfully mkdir!
+#    err_body:
+#      ret:
+#        msg: Failed mkdir!
+#  - route: "/list"
+#    method: GET
+#    header: JSON
+#    ret_body:
+#      ret:
+#        msg: Successfully ls!
+#        paths:
+#    err_body:
+#      ret:
+#        msg: Failed ls!
