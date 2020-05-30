@@ -14,44 +14,76 @@ server:
 func:
   - route: "/login{?user,pwd}"
     method: GET
-    header: JSON
-    ret_body:
-      ret:
-        msg: Successfully logged in!
-        token: ABC
-    err_body:
-      ret:
-        msg: Failed when logged in!
-        token:
+    res:
+      - url: "/login?user=chadli&pwd=123456"
+        header: JSON
+        ret_body:
+          msg: Successfully logged in!
+          token: ABC
+        err_body:
+          msg: Failed when logged in!
+          token:
+      - url: "/login?user=ekopei&pwd=qwerty"
+        header: JSON
+        ret_body:
+          msg: Successfully logged in!
+          token: DEF
+        err_body:
+          msg: Failed when logged in!
+          token:
   - route: "/get_userinfo{?token}"
     method: GET
-    header: JSON
-    ret_body:
-      ret:
-        msg: Successfully get user info!
-        user_info:
-          age: 18
-          gender: male
-    err_body:
-      ret:
-        msg: Failed when get user info!
-        user_info:
-          age:
-          gender:
+    res:
+      - url: "/get_userinfo?token=ABC"
+        header: JSON
+        ret_body:
+          msg: Successfully get user info!
+          user_info:
+            age: 20
+            gender: male
+        err_body:
+          msg: Failed when get user info!
+          user_info:
+            age:
+            gender:
+      - url: "/get_userinfo?token=DEF"
+        header: JSON
+        ret_body:
+          msg: Successfully get user info!
+          user_info:
+            age: 21
+            gender: male
+        err_body:
+          msg: Failed when get user info!
+          user_info:
+            age:
+            gender:
   - route: "/set_userinfo"
     method: POST
-    header: JSON
-    post_body:
-      token:  ABC
-      age: 18
-    ret_body:
-      ret:
-        msg: Successfully set user info!
-        ret_code: 0
-    err_body:
-      ret:
-        msg: Failed when set user info!
-        ret_code: -1
+    res:
+      - url: "/set_userinfo"
+        header: JSON
+        post_body:
+          token:  ABC
+          age: 20
+        ret_body:
+          msg: Successfully set user info!
+          ret_code: 0
+        err_body:
+          msg: Failed when set user info!
+          ret_code: -1
+      - url: "/set_userinfo"
+        header: JSON
+        post_body:
+          token:  DEF
+          age: 21
+        ret_body:
+          msg: Successfully set user info!
+          ret_code: 0
+        err_body:
+          msg: Failed when set user info!
+          ret_code: -1
+
 
 # for my test
 # I'll change `main` later

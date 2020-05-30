@@ -7,4 +7,5 @@ var (
 
 	ConfigInfo *configModel // all server config information
 
+	FuncInfo []*RouteModel
 )
