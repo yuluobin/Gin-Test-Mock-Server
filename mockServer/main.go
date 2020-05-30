@@ -85,7 +85,7 @@ func HandlePOST(c *gin.Context) {
 }
 
 // Create response in the format of JSON
-func createResponse() interface{} {
+func createResponse(res conf.Response) interface{} {
 
 }
 
