@@ -35,7 +35,7 @@ type RouteModel struct {
 }
 
 type Response struct {
-	URL string `yaml:"url"`
+	URI string `yaml:"url"`
 
 	Header string `yaml:"header"`
 

@@ -2,14 +2,18 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/conf"
 	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/system"
+	"net/http"
+	"net/url"
 	"os"
 	"path"
+	"sort"
 )
 
-var responses map[string]conf.Response
+//var responses map[string]conf.Response
 
 //var client puddlestore.Client
 
@@ -47,46 +51,105 @@ func main() {
 
 	r := gin.Default()
 	for _, route := range conf.ConfigInfo.Func {
-		method := route.Method
-		for _, res := range route.Responses {
-			if method == "GET" {
-				// Extract info from `route.Route` and insert it into a map?
-				// to let `GET` have access to res information
+		//method := route.Method
+		//for _, res := range route.Responses {
+		if route.Method == "GET" {
+			// Extract info from `route.Route` and insert it into a map?
+			// to let `GET` have access to res information
 
-				r.GET(route.Route, HandleGet)
-			} else if method == "POST" {
-				// Extract info from `route.Route` and insert it into a map?
-				// to let `POST` have access to res information
-				r.POST(route.Route, HandlePOST)
-			} else {
-				// Error message
-			}
+			r.GET(route.Route, HandleGet(route))
+		} else if route.Method == "POST" {
+			// Extract info from `route.Route` and insert it into a map?
+			// to let `POST` have access to res information
+			r.POST(route.Route, HandlePOST(route))
+		} else {
+			// Error message
 		}
+		//}
 	}
 	//r.GET("/get", HandleGet)
 	//r.GET("/list", HandleList)
 	//r.POST("/post", HandlePost)
 	//r.POST("/mkdir", HandleMkdir)
-	//r.PUT("/put", HandlePut)
-	//r.DELETE("/delete", HandleDelete)
-	//r.PATCH("/patch", HandlePatch)
-	//r.HEAD("/head", HandleHead)
-	//r.OPTIONS("/options", HandleOptions)
 	r.Run( /*":8081"*/ conf.ConfigInfo.Server.Port)
 
 }
 
-func HandleGet(c *gin.Context) {
+func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
+	// This can be added as a global variable later
+	//var responses map[string]conf.Response
+	responses := make(map[string]conf.Response)
+	// Insert values as a plain string and corresponding responses as values
+	for _, response := range route.Responses {
+		// Link params and values as a string
+		values, err := url.ParseQuery(response.URI)
+		if err != nil {
+			// Error message
+			panic("Panic: config url cannot be decoded")
+		}
+		var keys []string
+		for k := range values {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		var params string
+		for _, k := range keys {
+			params += k + "=" + values[k][0]
+		}
 
+		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
+		responses[key] = response
+	}
+
+	fn := func(c *gin.Context) {
+		values, err := url.ParseQuery(c.Request.URL.RawQuery)
+		if err != nil {
+			// Error message
+		}
+		var keys []string
+		for k := range values {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		var params string
+		for _, k := range keys {
+			params += k + "=" + values[k][0]
+		}
+		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
+		if response, ok := responses[key]; ok {
+			// There exists response
+			render(c, gin.H{}, response)
+		} else {
+
+		}
+	}
+
+	return gin.HandlerFunc(fn)
 }
 
-func HandlePOST(c *gin.Context) {
+func HandlePOST(route *conf.RouteModel) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+		// Your handler code goes in here - e.g.
 
+	}
+
+	return gin.HandlerFunc(fn)
 }
 
 // Create response in the format of JSON
 func createResponse(res conf.Response) interface{} {
 
+}
+
+func render(c *gin.Context, data gin.H, res conf.Response) {
+	switch res.Header {
+	case "application/json":
+		c.JSON(http.StatusOK, data["payload"])
+	case "application/xml":
+		c.XML(http.StatusOK, data["payload"])
+	default:
+		c.JSON(http.StatusOK, data["payload"])
+	}
 }
 
 //func HandleGet(c *gin.Context) {

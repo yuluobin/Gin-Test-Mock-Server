@@ -15,16 +15,16 @@ func:
   - route: "/login{?user,pwd}"
     method: GET
     res:
-      - url: "/login?user=chadli&pwd=123456"
-        header: JSON
+      - uri: "/login?user=chadli&pwd=123456"
+        header: application/json
         ret_body:
           msg: Successfully logged in!
           token: ABC
         err_body:
           msg: Failed when logged in!
           token:
-      - url: "/login?user=ekopei&pwd=qwerty"
-        header: JSON
+      - uri: "/login?user=ekopei&pwd=qwerty"
+        header: application/json
         ret_body:
           msg: Successfully logged in!
           token: DEF
@@ -34,8 +34,8 @@ func:
   - route: "/get_userinfo{?token}"
     method: GET
     res:
-      - url: "/get_userinfo?token=ABC"
-        header: JSON
+      - uri: "/get_userinfo?token=ABC"
+        header: application/json
         ret_body:
           msg: Successfully get user info!
           user_info:
@@ -46,8 +46,8 @@ func:
           user_info:
             age:
             gender:
-      - url: "/get_userinfo?token=DEF"
-        header: JSON
+      - uri: "/get_userinfo?token=DEF"
+        header: application/json
         ret_body:
           msg: Successfully get user info!
           user_info:
@@ -61,8 +61,8 @@ func:
   - route: "/set_userinfo"
     method: POST
     res:
-      - url: "/set_userinfo"
-        header: JSON
+      - uri: "/set_userinfo"
+        header: application/json
         post_body:
           token:  ABC
           age: 20
@@ -72,8 +72,8 @@ func:
         err_body:
           msg: Failed when set user info!
           ret_code: -1
-      - url: "/set_userinfo"
-        header: JSON
+      - uri: "/set_userinfo"
+        header: application/json
         post_body:
           token:  DEF
           age: 21
