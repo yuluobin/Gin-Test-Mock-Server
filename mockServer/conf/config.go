@@ -35,13 +35,13 @@ type RouteModel struct {
 }
 
 type Response struct {
-	URI string `yaml:"url"`
+	URI string `yaml:"uri"`
 
 	Header string `yaml:"header"`
 
-	PostBody interface{} `yaml:"post_body"`
+	PostBody map[string]interface{} `yaml:"post_body"`
 
-	RetBody interface{} `yaml:"ret_body"`
+	RetBody map[string]interface{} `yaml:"ret_body"`
 
-	ErrBody interface{} `yaml:"err_body"`
+	ErrBody map[string]interface{} `yaml:"err_body"`
 }

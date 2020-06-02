@@ -12,7 +12,7 @@ server:
   NumTapestry: 2
 
 func:
-  - route: "/login{?user,pwd}"
+  - route: "/login"
     method: GET
     res:
       - uri: "/login?user=chadli&pwd=123456"
@@ -31,33 +31,29 @@ func:
         err_body:
           msg: Failed when logged in!
           token:
-  - route: "/get_userinfo{?token}"
+  - route: "/get_userinfo"
     method: GET
     res:
       - uri: "/get_userinfo?token=ABC"
         header: application/json
         ret_body:
           msg: Successfully get user info!
-          user_info:
-            age: 20
-            gender: male
+          age: 20
+          gender: male
         err_body:
           msg: Failed when get user info!
-          user_info:
-            age:
-            gender:
+          age:
+          gender:
       - uri: "/get_userinfo?token=DEF"
         header: application/json
         ret_body:
           msg: Successfully get user info!
-          user_info:
-            age: 21
-            gender: male
+          age: 21
+          gender: male
         err_body:
           msg: Failed when get user info!
-          user_info:
-            age:
-            gender:
+          age:
+          gender:
   - route: "/set_userinfo"
     method: POST
     res:

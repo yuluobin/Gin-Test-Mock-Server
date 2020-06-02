@@ -13,7 +13,7 @@ import (
 	"sort"
 )
 
-//var responses map[string]conf.Response
+var responses map[string]conf.Response
 
 //var client puddlestore.Client
 
@@ -24,6 +24,7 @@ func main() {
 	fPath = path.Join(fPath, "conf")
 	configPath := flag.String("c", fPath, "config file path")
 	flag.Parse()
+	responses = make(map[string]conf.Response)
 	err := system.LoadConfigInformation(*configPath)
 	if err != nil {
 		panic(err)
@@ -78,11 +79,17 @@ func main() {
 func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 	// This can be added as a global variable later
 	//var responses map[string]conf.Response
-	responses := make(map[string]conf.Response)
+	//responses := make(map[string]conf.Response)
 	// Insert values as a plain string and corresponding responses as values
 	for _, response := range route.Responses {
 		// Link params and values as a string
-		values, err := url.ParseQuery(response.URI)
+		// Get component at right side of "?"
+		uri, err := url.Parse(response.URI)
+		if err != nil {
+			// Handle error
+			panic("Panic: config url cannot be decoded")
+		}
+		values, err := url.ParseQuery(uri.RawQuery)
 		if err != nil {
 			// Error message
 			panic("Panic: config url cannot be decoded")
@@ -90,6 +97,7 @@ func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 		var keys []string
 		for k := range values {
 			keys = append(keys, k)
+			//fmt.Printf("%v\n", k)
 		}
 		sort.Strings(keys)
 		var params string
@@ -99,12 +107,16 @@ func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 
 		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
 		responses[key] = response
+		fmt.Printf("%v\n", key)
 	}
 
 	fn := func(c *gin.Context) {
 		values, err := url.ParseQuery(c.Request.URL.RawQuery)
 		if err != nil {
 			// Error message
+			render(c, gin.H{
+				"error": "Request invalid",
+			}, conf.Response{}, http.StatusBadRequest)
 		}
 		var keys []string
 		for k := range values {
@@ -116,39 +128,42 @@ func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 			params += k + "=" + values[k][0]
 		}
 		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
+		fmt.Printf("%v\n", key)
+
 		if response, ok := responses[key]; ok {
 			// There exists response
-			render(c, gin.H{}, response)
+			render(c, response.RetBody, response, http.StatusOK)
 		} else {
-
+			render(c, response.ErrBody, response, http.StatusNotFound)
 		}
 	}
 
-	return gin.HandlerFunc(fn)
+	return fn
 }
 
 func HandlePOST(route *conf.RouteModel) gin.HandlerFunc {
+
 	fn := func(c *gin.Context) {
 		// Your handler code goes in here - e.g.
 
 	}
 
-	return gin.HandlerFunc(fn)
+	return fn
 }
 
 // Create response in the format of JSON
-func createResponse(res conf.Response) interface{} {
+//func createResponse(res conf.Response) interface{} {
+//
+//}
 
-}
-
-func render(c *gin.Context, data gin.H, res conf.Response) {
+func render(c *gin.Context, data gin.H, res conf.Response, status int) {
 	switch res.Header {
 	case "application/json":
-		c.JSON(http.StatusOK, data["payload"])
+		c.JSON(status, data)
 	case "application/xml":
-		c.XML(http.StatusOK, data["payload"])
+		c.XML(status, data)
 	default:
-		c.JSON(http.StatusOK, data["payload"])
+		c.JSON(status, data)
 	}
 }
 
