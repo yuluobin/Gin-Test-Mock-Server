@@ -94,6 +94,7 @@ func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 			render(c, gin.H{
 				"error": "Request invalid",
 			}, conf.Response{}, http.StatusBadRequest)
+			return
 		}
 		var keys []string
 		for k := range values {
@@ -111,7 +112,7 @@ func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 			// There exists response
 			render(c, response.RetBody, response, http.StatusOK)
 		} else {
-			render(c, response.ErrBody, response, http.StatusNotFound)
+			render(c, response.ErrBody /*NULL*/, response, http.StatusNotFound)
 		}
 	}
 
@@ -150,8 +151,6 @@ func HandlePOST(route *conf.RouteModel) gin.HandlerFunc {
 			return
 		}
 		// Parse post_body
-		//postBody := &ReqModel{}
-		//c.BindJSON(postBody)
 		temp, _ := ioutil.ReadAll(c.Request.Body)
 		postBody, err := url.ParseQuery(string(temp))
 
@@ -172,7 +171,7 @@ func HandlePOST(route *conf.RouteModel) gin.HandlerFunc {
 			// There exists response
 			render(c, response.RetBody, response, http.StatusOK)
 		} else {
-			render(c, response.ErrBody, response, http.StatusForbidden)
+			render(c, response.ErrBody /*NULL*/, response, http.StatusForbidden)
 		}
 	}
 

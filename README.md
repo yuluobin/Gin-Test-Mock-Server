@@ -3,23 +3,9 @@ A mock server (simply)
 
 ## Note
 **NEED TO UPDATE**
-- The mock server is in the directory /mockServer. All other remaining is a distributed file system for my personal final project, for test purpose.
-- Since the file system is running on Zookeeper, for testing you should run Zookeeper server on the local machine (the default zk port is `127.0.0.1:2181`).
+- The mock server is in the directory /mockServer. All other remaining is a distributed file system is for test purpose (maybe of no use).
 
 ## Instructions (Only for test purpose!)
-**NEED TO UPDATE**
-
-### Get Zookeeper running in the background (Or use a zk image)
-
-```bash
-wget https://downloads.apache.org/zookeeper/zookeeper-3.6.0/apache-zookeeper-3.6.0-bin.tar.gz
-tar -xvzf apache-zookeeper-3.6.0-bin.tar.gz
-cd apache-zookeeper-3.6.0-bin
-cp conf/zoo_sample.cfg conf/zoo.cfg
-bin/zkServer.sh start-foreground # Running zk server
-bin/zkCli.sh -server 127.0.0.1:2181
-```
-
 ### Get Mock Server
 
 ```bash
@@ -27,25 +13,27 @@ cd $GOPATH
 go get -u -v -d github.com/yuluobin/Gin-Test-Mocker-Server/...
 cd $GOPATH/src/github.com/yuluobin/Gin-Test-Mocker-Server
 git checkout feat
-sudo docker build . # Build docker image
-sudo docker run --network host e713
+sudo docker build -t mockserver . # Build docker image
+sudo docker run -p 8081:8081 mockserver
 ```
 
 ### Test Example
 
+As the default configuration file
+
 ```bash
-$ curl http://localhost:8081/post -X POST -d 'path=/a&content=123456'
-{"Content":"123456","Path":"/a"}
-$ curl http://localhost:8081/post -X POST -d 'path=/b&content=qwerty'
-{"Content":"qwerty","Path":"/b"}
-$ curl http://localhost:8081/get?path=/a
-{"Content":"123456","Path":"/a"}
-$ curl http://localhost:8081/get?path=/b
-{"Content":"qwerty","Path":"/b"}
-$ curl http://localhost:8081/get?path=/c
-{"Content":"NULL","Path":"/c"}
-$ curl http://localhost:8081/post -X POST -d 'path=/b&delete=true'
-{"Content":"NULL","Exists":"false","Path":"/a"}
-$ curl http://localhost:8081/get?path=/a
-{"Content":"NULL","Path":"/a"}
+$ curl "http://localhost:8081/login?user=chadli&pwd=123456"
+{"msg":"Successfully logged in!","token":"ABC"}
+$ curl "http://localhost:8081/login?pwd=qwerty&user=ekopei"
+{"msg":"Successfully logged in!","token":"DEF"}
+$ curl "http://localhost:8081/get_userinfo?token=ABC"
+{"age":20,"gender":"male","msg":"Successfully get user info!"}
+$ curl "http://localhost:8081/get_userinfo?token=DEF"
+{"age":21,"gender":"male","msg":"Successfully get user info!"}
+$ curl "http://localhost:8081/set_userinfo" -X POST -d 'token=ABC&age=20'
+{"msg":"Successfully set user info!","ret_code":0}
+$ curl "http://localhost:8081/set_userinfo" -X POST -d 'token=DEF&age=21'
+{"msg":"Successfully set user info!","ret_code":0}
+$ curl "http://localhost:8081/get_userinfo?token=ABD" # Wrong token
+null
 ```
