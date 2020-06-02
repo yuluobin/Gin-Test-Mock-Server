@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/conf"
 	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/system"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -30,26 +31,6 @@ func main() {
 		panic(err)
 	}
 
-	//fmt.Printf("%+v\n",conf.ConfigInfo.Server)
-	//
-	//// Initialize cluster
-	//config := puddlestore.Config{
-	//	BlockSize:   conf.ConfigInfo.Server.BlockSize,
-	//	NumReplicas: conf.ConfigInfo.Server.NumReplicas,
-	//	NumTapestry: conf.ConfigInfo.Server.NumTapestry,
-	//	ZkAddr:      conf.ConfigInfo.Server.ZKPort,
-	//}
-	//cluster, err := puddlestore.CreateCluster(config)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//defer cluster.Shutdown()
-	//
-	//client, err = cluster.NewClient()
-	//if err != nil {
-	//	panic(err)
-	//}
-
 	r := gin.Default()
 	for _, route := range conf.ConfigInfo.Func {
 		//method := route.Method
@@ -57,7 +38,6 @@ func main() {
 		if route.Method == "GET" {
 			// Extract info from `route.Route` and insert it into a map?
 			// to let `GET` have access to res information
-
 			r.GET(route.Route, HandleGet(route))
 		} else if route.Method == "POST" {
 			// Extract info from `route.Route` and insert it into a map?
@@ -65,13 +45,10 @@ func main() {
 			r.POST(route.Route, HandlePOST(route))
 		} else {
 			// Error message
+			err := fmt.Errorf("error: the mock server has not support %v yet", route.Method)
+			fmt.Println(err)
 		}
-		//}
 	}
-	//r.GET("/get", HandleGet)
-	//r.GET("/list", HandleList)
-	//r.POST("/post", HandlePost)
-	//r.POST("/mkdir", HandleMkdir)
 	r.Run( /*":8081"*/ conf.ConfigInfo.Server.Port)
 
 }
@@ -143,18 +120,64 @@ func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 
 func HandlePOST(route *conf.RouteModel) gin.HandlerFunc {
 
-	fn := func(c *gin.Context) {
-		// Your handler code goes in here - e.g.
+	for _, response := range route.Responses {
+		_, err := url.Parse(response.URI)
+		if err != nil {
+			// Handle error
+			panic("Panic: config url cannot be decoded")
+		}
+		var keys []string
+		for key := range response.PostBody {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+		var params string
+		for _, k := range keys {
+			params += k + ":" + response.PostBody[k]
+		}
+		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
+		responses[key] = response
+		fmt.Printf("%v\n", key)
+	}
 
+	fn := func(c *gin.Context) {
+		_, err := url.ParseQuery(c.Request.URL.RawQuery)
+		if err != nil {
+			// Error message
+			render(c, gin.H{
+				"error": "Request invalid",
+			}, conf.Response{}, http.StatusBadRequest)
+			return
+		}
+		// Parse post_body
+		//postBody := &ReqModel{}
+		//c.BindJSON(postBody)
+		temp, _ := ioutil.ReadAll(c.Request.Body)
+		postBody, err := url.ParseQuery(string(temp))
+
+		fmt.Println(postBody)
+		var keys []string
+		for k := range postBody {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		var params string
+		for _, k := range keys {
+			params += k + ":" + postBody[k][0]
+		}
+		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
+		fmt.Printf("%v\n", key)
+
+		if response, ok := responses[key]; ok {
+			// There exists response
+			render(c, response.RetBody, response, http.StatusOK)
+		} else {
+			render(c, response.ErrBody, response, http.StatusForbidden)
+		}
 	}
 
 	return fn
 }
-
-// Create response in the format of JSON
-//func createResponse(res conf.Response) interface{} {
-//
-//}
 
 func render(c *gin.Context, data gin.H, res conf.Response, status int) {
 	switch res.Header {
@@ -187,7 +210,7 @@ func render(c *gin.Context, data gin.H, res conf.Response, status int) {
 //		"Content": string(data),
 //	})
 //}
-//
+
 //// Put and Delete
 //func HandlePost(c *gin.Context) {
 //	//body, _ := ioutil.ReadAll(c.Request.Body)

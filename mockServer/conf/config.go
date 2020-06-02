@@ -39,7 +39,7 @@ type Response struct {
 
 	Header string `yaml:"header"`
 
-	PostBody map[string]interface{} `yaml:"post_body"`
+	PostBody map[string]string `yaml:"post_body"`
 
 	RetBody map[string]interface{} `yaml:"ret_body"`
 
