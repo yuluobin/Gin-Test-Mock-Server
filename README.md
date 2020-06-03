@@ -37,3 +37,16 @@ $ curl "http://localhost:8081/set_userinfo" -X POST -d 'token=DEF&age=21'
 $ curl "http://localhost:8081/get_userinfo?token=ABD" # Wrong token
 null
 ```
+
+## Configuration File
+
+The format of configuration file is YAML.
+
+- `route`: the basic URI of *this* request
+- `method`: the http request method (up to now the mock server supports `GET` and `POST` request)
+- `res`: is a respond array containing specific configuration of each request
+  - `uri`: a URI contains variables
+  - `header`: format of respond message
+  - `post_body`: contains post body. Can be omitted in `GET` request
+  - `ret_body`: contains respond message body if the request is successful
+  - `err_body`: contains error message if the request is unsuccessful.
