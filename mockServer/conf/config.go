@@ -16,14 +16,6 @@ type serverModel struct {
 	Build string `yaml:"build"`
 
 	Port string `yaml:"port"` // server port
-
-	ZKPort string `yaml:"ZkAddr"`
-
-	BlockSize uint64 `yaml:"BlockSize"`
-
-	NumReplicas int `yaml:"NumReplicas"`
-
-	NumTapestry int `yaml:"NumTapestry"`
 }
 
 type RouteModel struct {
@@ -32,6 +24,8 @@ type RouteModel struct {
 	Method string `yaml:"method"`
 
 	Responses []Response `yaml:"res"`
+
+	ErrBody map[string]interface{} `yaml:"err_body"`
 }
 
 type Response struct {
@@ -42,6 +36,4 @@ type Response struct {
 	PostBody map[string]string `yaml:"post_body"`
 
 	RetBody map[string]interface{} `yaml:"ret_body"`
-
-	ErrBody map[string]interface{} `yaml:"err_body"`
 }

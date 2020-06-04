@@ -25,6 +25,7 @@ func main() {
 	fPath = path.Join(fPath, "conf")
 	configPath := flag.String("c", fPath, "config file path")
 	flag.Parse()
+	// Initialize response map
 	responses = make(map[string]conf.Response)
 	err := system.LoadConfigInformation(*configPath)
 	if err != nil {
@@ -84,7 +85,7 @@ func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 
 		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
 		responses[key] = response
-		fmt.Printf("%v\n", key)
+		//fmt.Printf("%v\n", key)
 	}
 
 	fn := func(c *gin.Context) {
@@ -93,7 +94,7 @@ func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 			// Error message
 			render(c, gin.H{
 				"error": "Request invalid",
-			}, conf.Response{}, http.StatusBadRequest)
+			}, "", http.StatusBadRequest)
 			return
 		}
 		var keys []string
@@ -106,13 +107,13 @@ func HandleGet(route *conf.RouteModel) gin.HandlerFunc {
 			params += k + "=" + values[k][0]
 		}
 		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
-		fmt.Printf("%v\n", key)
+		//fmt.Printf("%v\n", key)
 
 		if response, ok := responses[key]; ok {
 			// There exists response
-			render(c, response.RetBody, response, http.StatusOK)
+			render(c, response.RetBody, response.Header, http.StatusOK)
 		} else {
-			render(c, response.ErrBody /*NULL*/, response, http.StatusNotFound)
+			render(c, route.ErrBody, response.Header, http.StatusNotFound)
 		}
 	}
 
@@ -138,7 +139,7 @@ func HandlePOST(route *conf.RouteModel) gin.HandlerFunc {
 		}
 		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
 		responses[key] = response
-		fmt.Printf("%v\n", key)
+		//fmt.Printf("%v\n", key)
 	}
 
 	fn := func(c *gin.Context) {
@@ -147,14 +148,17 @@ func HandlePOST(route *conf.RouteModel) gin.HandlerFunc {
 			// Error message
 			render(c, gin.H{
 				"error": "Request invalid",
-			}, conf.Response{}, http.StatusBadRequest)
+			}, "", http.StatusBadRequest)
 			return
 		}
 		// Parse post_body
 		temp, _ := ioutil.ReadAll(c.Request.Body)
 		postBody, err := url.ParseQuery(string(temp))
+		if err != nil {
+			render(c, route.ErrBody, "", http.StatusForbidden)
+		}
 
-		fmt.Println(postBody)
+		//fmt.Println(postBody)
 		var keys []string
 		for k := range postBody {
 			keys = append(keys, k)
@@ -165,21 +169,21 @@ func HandlePOST(route *conf.RouteModel) gin.HandlerFunc {
 			params += k + ":" + postBody[k][0]
 		}
 		key := fmt.Sprintf("%s|%s|%s", route.Route, route.Method, params)
-		fmt.Printf("%v\n", key)
+		//fmt.Printf("%v\n", key)
 
 		if response, ok := responses[key]; ok {
 			// There exists response
-			render(c, response.RetBody, response, http.StatusOK)
+			render(c, response.RetBody, response.Header, http.StatusOK)
 		} else {
-			render(c, response.ErrBody /*NULL*/, response, http.StatusForbidden)
+			render(c, route.ErrBody, response.Header, http.StatusForbidden)
 		}
 	}
 
 	return fn
 }
 
-func render(c *gin.Context, data gin.H, res conf.Response, status int) {
-	switch res.Header {
+func render(c *gin.Context, data gin.H, header string, status int) {
+	switch header {
 	case "application/json":
 		c.JSON(status, data)
 	case "application/xml":

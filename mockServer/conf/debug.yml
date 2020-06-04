@@ -6,33 +6,29 @@ server:
   mode: debug # debug, release
   build: "/~/go/src/github.com/brown-csci1380-s20/puddlestorenew-puddlestorenew-cwang147-byu18-mxu57/mockServer/app"
   port: ":8081"
-  ZkAddr: "localhost:2181"
-  BlockSize: 64
-  NumReplicas: 2
-  NumTapestry: 2
 
 func:
   - route: "/login"
     method: GET
+    err_body:
+      msg: Failed when logged in!
+      ret_code: -1
     res:
       - uri: "/login?user=chadli&pwd=123456"
         header: application/json
         ret_body:
           msg: Successfully logged in!
           token: ABC
-        err_body:
-          msg: Failed when logged in!
-          token:
       - uri: "/login?user=ekopei&pwd=qwerty"
         header: application/json
         ret_body:
           msg: Successfully logged in!
           token: DEF
-        err_body:
-          msg: Failed when logged in!
-          token:
   - route: "/get_userinfo"
     method: GET
+    err_body:
+      msg: Failed when get user info!
+      ret_code: -1
     res:
       - uri: "/get_userinfo?token=ABC"
         header: application/json
@@ -40,22 +36,17 @@ func:
           msg: Successfully get user info!
           age: 20
           gender: male
-        err_body:
-          msg: Failed when get user info!
-          age:
-          gender:
       - uri: "/get_userinfo?token=DEF"
         header: application/json
         ret_body:
           msg: Successfully get user info!
           age: 21
           gender: male
-        err_body:
-          msg: Failed when get user info!
-          age:
-          gender:
   - route: "/set_userinfo"
     method: POST
+    err_body:
+      msg: Failed when set user info!
+      ret_code: -1
     res:
       - uri: "/set_userinfo"
         header: application/json
@@ -65,9 +56,6 @@ func:
         ret_body:
           msg: Successfully set user info!
           ret_code: 0
-        err_body:
-          msg: Failed when set user info!
-          ret_code: -1
       - uri: "/set_userinfo"
         header: application/json
         post_body:
@@ -76,9 +64,6 @@ func:
         ret_body:
           msg: Successfully set user info!
           ret_code: 0
-        err_body:
-          msg: Failed when set user info!
-          ret_code: -1
 
 
 # for my test
