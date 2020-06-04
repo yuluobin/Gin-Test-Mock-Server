@@ -50,3 +50,12 @@ The format of configuration file is YAML.
   - `post_body`: contains post body. Can be omitted in `GET` request
   - `ret_body`: contains respond message body if the request is successful
   - `err_body`: contains error message if the request is unsuccessful.
+
+## wrk Test Guide
+
+Under `mockServer` directory
+
+```bash
+wrk -t5 -c400 -d20s -s wrk_test.lua http://localhost:8081
+```
+
