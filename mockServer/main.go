@@ -3,11 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/DeanThompson/ginpprof"
 	"github.com/gin-gonic/gin"
 	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/conf"
 	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/system"
 	"io/ioutil"
 	"net/http"
+	_ "net/http/pprof"
 	"net/url"
 	"os"
 	"path"
@@ -33,6 +35,7 @@ func main() {
 	}
 
 	r := gin.Default()
+	ginpprof.Wrap(r)
 	for _, route := range conf.ConfigInfo.Func {
 		//method := route.Method
 		//for _, res := range route.Responses {
