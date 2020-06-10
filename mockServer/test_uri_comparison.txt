@@ -1,0 +1,8 @@
+/logint?user=chadli&pwd=123456
+/logint?user=ekopei&pwd=qwerty
+/get_userinfot?token=ABC
+/get_userinfot?token=DEF
+/set_userinfot
+token=ABC&age=20
+/set_userinfot
+token=DEF&age=21

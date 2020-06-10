@@ -1,12 +1,12 @@
-# Gin-Test-Mocker-Server
-A mock server (simply)
+# Gin-Test-Mock-Server
+## Introduction
 
-## Note
-**NEED TO UPDATE**
-- The mock server is in the directory /mockServer. All other remaining is a distributed file system is for test purpose (maybe of no use).
+This is a simple web API mocking server based on Gin. Simply modify configuration file and map API requests and responses in YAML, you are ready to test front-end API without an actual server.
 
-## Instructions (Only for test purpose!)
-### Get Mock Server
+## Installation
+### Get Mock Server and Run
+
+If you haven't modify or create your new config file, the program will load `debug.yml` as default configuration.
 
 ```bash
 cd $GOPATH
@@ -16,6 +16,14 @@ git checkout feat
 sudo docker build -t mockserver . # Build docker image
 sudo docker run -p 8081:8081 mockserver
 ```
+
+In this way the mock server will run in docker. But if you want to build it in your own machine and start to work instantly, simply do as follows after checking out the `feat` branch:
+
+```bash
+go build -o mockserver; ./mockserver
+```
+
+If you see `Listening and serving HTTP on :8081` at the end in the terminal, the mock server is successfully running in the background.
 
 ### Test Example
 

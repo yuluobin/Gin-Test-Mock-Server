@@ -53,6 +53,68 @@ func main() {
 			fmt.Println(err)
 		}
 	}
+
+	r.GET("/logint", func(c *gin.Context) {
+		usr := c.Query("user")
+		pwd := c.Query("pwd")
+
+		if usr == "chadli" && pwd == "123456" {
+			c.JSON(200, gin.H{
+				"msg":   "Successfully logged in!",
+				"token": "ABC",
+			})
+		} else if usr == "ekopei" && pwd == "qwerty" {
+			c.JSON(200, gin.H{
+				"msg":   "Successfully logged in!",
+				"token": "DEF",
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"msg":      "Failed when logged in!",
+				"ret_code": "-1",
+			})
+		}
+	})
+	r.GET("/get_userinfot", func(c *gin.Context) {
+		token := c.Query("token")
+
+		if token == "ABC" {
+			c.JSON(200, gin.H{
+				"msg":    "Successfully get user info!",
+				"age":    20,
+				"gender": "male",
+			})
+		} else if token == "DEF" {
+			c.JSON(200, gin.H{
+				"msg":    "Successfully get user info!",
+				"age":    21,
+				"gender": "male",
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"msg":         "Failed when get user info!",
+				"return code": -1,
+			})
+		}
+	})
+	r.POST("/set_userinfot", func(c *gin.Context) {
+		token := c.PostForm("token")
+		age := c.PostForm("age")
+
+		fmt.Println(token, age)
+		if token != "ABC" && token != "DEF" || age == "" {
+			c.JSON(http.StatusNotFound, gin.H{
+				"msg":         "Failed when set user info!",
+				"return code": -1,
+			})
+			return
+		}
+		c.JSON(200, gin.H{
+			"msg":         "Successfully set user info!",
+			"return code": 0,
+		})
+	})
+
 	r.Run( /*":8081"*/ conf.ConfigInfo.Server.Port)
 
 }

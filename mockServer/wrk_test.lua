@@ -1,5 +1,5 @@
 --wrk.method = "POST"
---wrk.headers["Content-Type"] = "application/json"
+--wrk.headers["Content-Type"] = "application/x-www-form-urlencoded"
 --wrk.body = "token=ABC&age=20"
 
 -- Load URL paths from the file
@@ -28,7 +28,7 @@ function load_url_paths_from_file(file)
 end
 
 -- Load URL paths from file
-paths = load_url_paths_from_file("./test_uri.txt")
+paths = load_url_paths_from_file("./test_uri_comparison.txt")
 
 count = 1
 
@@ -43,7 +43,7 @@ request = function()
     if count >= 6 then
         body = paths[count]
         count = count + 1
-        return wrk.format('POST', url_path, nil, body)
+        return wrk.format('POST', url_path, {["Content-Type"] = "application/x-www-form-urlencoded"}, body)
     end
-    return wrk.format('GET', url_path, nil, nil)
+    return wrk.format('GET', url_path, {["Content-Type"] = "application/x-www-form-urlencoded"}, nil)
 end
