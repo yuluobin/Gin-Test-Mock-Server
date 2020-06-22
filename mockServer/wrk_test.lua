@@ -40,7 +40,7 @@ request = function()
     url_path = paths[count]
     count = count + 1
 
-    if count >= 6 then
+    if count > 5 then
         body = paths[count]
         count = count + 1
         return wrk.format('POST', url_path, {["Content-Type"] = "application/x-www-form-urlencoded"}, body)
