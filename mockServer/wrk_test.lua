@@ -28,7 +28,7 @@ function load_url_paths_from_file(file)
 end
 
 -- Load URL paths from file
-paths = load_url_paths_from_file("./test_uri_comparison.txt")
+paths = load_url_paths_from_file("./test_uri.txt")
 
 count = 1
 

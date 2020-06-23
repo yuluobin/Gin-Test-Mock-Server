@@ -59,7 +59,24 @@ This simple guide will help you go through the process of using the mock server.
 
    (**Don't** know how to use *curl*? You can refer to the test examples below.)
 
-5. (Optional) There's a lua scripts provided to test mock server performance. 
+5. (Optional) There's a lua scripts provided to test mock server performance using *wrk*. Test URIs should be placed in `test_uri.txt` file. Since POST request need request body, all POST URIs should be placed after GET URIs, and request body must be in the separate line with its URI. For example:
+
+   ```bash
+   /login?user=chadli&pwd=123456		# 1st GET URI
+   /login?user=ekopei&pwd=qwerty		# 2nd GET URI
+   /set_userinfo						# 1st POST URI
+   token=ABC&age=20					# 1st POST URI's request body
+   /set_userinfo						# 2nd POST URI
+   token=DEF&age=21					# 2nd POST URI's request body
+   ```
+
+   Make sure the mock server is running in the background before testing. For example:
+
+   ```bash
+   wrk -t5 -c400 -d20s -s wrk_test.lua http://localhost:8081
+   ```
+
+   (**Don't** know *wrk*? Check the link below https://github.com/wg/wrk). 
 
 ## Configuration File Format Guide
 
@@ -74,7 +91,7 @@ The format of configuration file is YAML.
   - `ret_body`: contains respond message body if the request is successful
   - `err_body`: contains error message if the request is unsuccessful.
 
-### Test Example
+## Test Example
 
 As the default configuration file
 
@@ -93,12 +110,4 @@ $ curl "http://localhost:8081/set_userinfo" -X POST -d 'token=DEF&age=21'
 {"msg":"Successfully set user info!","ret_code":0}
 $ curl "http://localhost:8081/get_userinfo?token=ABD" # Wrong token
 null
-```
-
-## wrk Test Guide
-
-Under `mockServer` directory
-
-```bash
-wrk -t5 -c400 -d20s -s wrk_test.lua http://localhost:8081
 ```
