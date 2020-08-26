@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/system"
+	"github.com/yuluobin/Gin-Test-Mock-Server/mockServer/system"
 	"os"
 	"path"
 	"testing"
