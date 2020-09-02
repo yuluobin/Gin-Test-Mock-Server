@@ -2,7 +2,7 @@ package system
 
 import (
 	"fmt"
-	"github.com/yuluobin/Gin-Test-Mocker-Server/mockServer/conf"
+	"github.com/yuluobin/Gin-Test-Mock-Server/mockServer/conf"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
