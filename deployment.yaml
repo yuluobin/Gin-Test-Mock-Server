@@ -1,0 +1,19 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: demomockserver-c5dl51mdps80
+spec:
+  selector:
+    matchLabels:
+      app: demomockserver-c5dl51mdps80
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: demomockserver-c5dl51mdps80
+    spec:
+      containers:
+      - name: demomockserver-c5dl51mdps80
+        image: csighub.tencentyun.com/bookeryu/private:mock-server-58
+        ports:
+        - containerPort: 8081
