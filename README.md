@@ -16,8 +16,8 @@ If you haven't modify or create your new config file, the program will load `deb
 
 ```bash
 cd $GOPATH
-go get -u -v -d github.com/yuluobin/Gin-Test-Mocker-Server/...
-cd $GOPATH/src/github.com/yuluobin/Gin-Test-Mocker-Server
+go get -u -v -d github.com/yuluobin/Gin-Test-Mock-Server/...
+cd $GOPATH/src/github.com/yuluobin/Gin-Test-Mock-Server
 git checkout feat
 sudo docker build -t mockserver . # Build docker image
 sudo docker run -p 8081:8081 mockserver
